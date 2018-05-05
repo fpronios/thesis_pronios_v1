@@ -1,11 +1,23 @@
 class message():
-
-    self.__init__(self,mtype, mfrom, mto, mdat):
-
+    def __init__(self, mtype, mfrom, mto, mdat, t_slot):
         self.type = mtype
-        self.mfrom = mfrom
-        self.mto = mto
+        self.mfrom = int(mfrom)
+        self.mto = int(mto)
         self.mdat = mdat
+        self.t_slot = int(t_slot)
+
+
+def message_encoder(mtype, mfrom, mto, mdat, t_slot):
+    msg = message(mtype, mfrom, mto, mdat, t_slot)
+
+    return msg
+
+
+def message_decoder(msg):
+    sep = ','
+    msg_str = str(msg.type) + sep + str(msg.mfrom) + sep + str(msg.mto) + sep + str(msg.mdat) + sep + str(msg.t_slot)
+
+    return msg_str
 
 
 def distributed_max_sum(agent, graph, spanning_tree):

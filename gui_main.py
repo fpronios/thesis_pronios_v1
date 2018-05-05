@@ -18,7 +18,7 @@ from PyQt5 import QtCore
 
 graph_path = ""
 graph_path2 = ""
-global_agents = 10
+global_agents = 50
 global_edges = 5
 agents_procs = []
 
@@ -79,7 +79,7 @@ class App(QDialog):
         self.create_graph_b.clicked.connect(self.create_graph)
 
         self.show_3d_b = QPushButton("3D")
-        self.show_3d_b.clicked.connect(self.show_3d)
+        self.show_3d_b.clicked.connect(self.show_3d_m)
 
         self.graph_loc = QLineEdit(self)
         self.graph_loc2 = QLineEdit(self)

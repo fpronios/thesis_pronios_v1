@@ -3,8 +3,9 @@ import msg_parser as msg
 #import theano
 #import tensorflow as tf
 #import mdptoolbox
+from mpi4py import MPI
 
-
+import asyncio
 import time
 from functools import wraps
 
@@ -67,14 +68,19 @@ def load_tree(filepath):
     print("Parent:")
     print(st.neighbors(agent_id, mode="IN"))
     #st.degree()
-    return 1
 
-    return -1
+    return st
 
 
 def main(agent_idd,filepath, server_push_port = "5556", server_pub_port = "5558"):
     global agent_id
     agent_id = agent_idd
-    print(agent_id)
-    load_tree(filepath)
-    msg.main(agent_id, server_push_port, server_pub_port)
+
+    print('Agent ID: ' , agent_id)
+
+    # Load the spaaning tree from the file as object
+    st = load_tree(filepath)
+    children = list(set(st.neighbors(agent_id , mode="OUT")))
+    parent = list(set(st.neighbors(agent_id , mode="IN")))
+
+    msg.main(agent_id, server_push_port, server_pub_port, parent, children)
