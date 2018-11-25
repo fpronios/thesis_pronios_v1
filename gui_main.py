@@ -4,6 +4,7 @@ from PyQt5.QtWidgets import QApplication, QWidget, QPushButton, QHBoxLayout, QGr
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import pyqtSlot
 import atexit
+import psutil
 import pickle
 import subprocess, signal, os
 import msg_parser
@@ -168,44 +169,53 @@ class App(QDialog):
         global agents_procs
         for i in range(global_agents):
 
-            p = mp.Process(target=agent.main(i,graph_path))#,str(5000 + 2 * i),str(5000 + 2 * i + 1)))
-            p.daemon = True
-            agents_procs.append(p)
-            p.start()
-            prog = (i+1)/global_agents*100
-            #print(prog)
+            #p = mp.Process(target=agent.main(i,graph_path))#,str(5000 + 2 * i),str(5000 + 2 * i + 1)))
+            #p.daemon = True
+            #agents_procs.append(p)
+            #p.start()
+            #prog = (i+1)/global_agents*100
+            ##print(prog)
+
+            import subprocess
+
+            pid = subprocess.Popen(args=["gnome-terminal", "command=python3 test.py %d " % (i+1,), ' | ', "agent_%d.txt" % (i+1,)]).pid
+            agents_procs.append(pid)
+            prog = (i + 1) / global_agents * 100
             self.progress.setValue(prog)
 
-        if False:
-            for a in range(global_agents):
-                os.system("agent.py "+str(a))
+        #if False:
+        #    for a in range(global_agents):
+        #        os.system("agent.py "+str(a))
 
-        if False:
-            for a in range(global_agents):
-                os.system("agent.py "+str(a))
-                #import the agent as a module, run main with args
+        #if False:
+        #    for a in range(global_agents):
+        #        os.system("agent.py "+str(a))
+        #        #import the agent as a module, run main with args
 
     def stop_sim(self):
         spt.setproctitle("pronpy_closer")
         time.sleep(0.5)
 
-        p = subprocess.Popen(['ps', '-A'], stdout=subprocess.PIPE)
-        out, err = p.communicate()
+        #p = subprocess.Popen(['ps', '-A'], stdout=subprocess.PIPE)
+        #out, err = p.communicate()
 
         #for line in out.splitlines():
          #   if b'pronpy' in line:
           #      pid = int(line.split(None, 1)[0])
            #     os.kill(pid, signal.SIGKILL)
 
-        i = global_agents
-        for proc in agents_procs:
-            i -= 1
-            proc.terminate()
-            print('TERMINATED:', proc, proc.is_alive())
-            proc.join()
-            print('JOINED:', proc, proc.is_alive())
-            self.progress.setValue(100*i/global_agents)
+        #i = global_agents
+        #for proc in agents_procs:
+        #    i -= 1
+        #    proc.terminate()
+        #    print('TERMINATED:', proc, proc.is_alive())
+        #    proc.join()
+        #    print('JOINED:', proc, proc.is_alive())
+        #    self.progress.setValue(100*i/global_agents)
         #os.killpg()
+        for pid in agents_procs:
+            p = psutil.Process(pid)
+            p.terminate()  # or p.kill()
 
     def closeEvent(self, event):
         """Generate 'question' dialog on clicking 'X' button in title bar.
