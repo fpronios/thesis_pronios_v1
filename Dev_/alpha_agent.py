@@ -19,7 +19,8 @@ import json
 import gp_estimator as gpe
 
 
-URL = 'http://127.0.0.1:1994/'
+#URL = 'http://127.0.0.1:1994/'
+URL = 'http://192.168.0.22:1994/'
 
 def main():
 
